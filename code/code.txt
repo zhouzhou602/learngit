@@ -1,0 +1,14 @@
+downloadFERCdata <- function(url="http://www.ferc.gov/docs-filing/forms/form-2/data/1995/F2Y95A-M.ZIP”,out.dir=“./fercForm2Data2”)
+dir.create(out.dir)
+  for(y in years) {
+    name <- sprintf("f2_%d.zip",y)
+    file.name <- paste(out.dir,name,sep="/")
+    if (file.exists(file.name)) {
+      warning(sprintf("%s already exists, not redownloading\n",file.name))
+      return
+    } else {
+      url <- paste(base.url,name,sep="/")
+      download.file(url,file.name,mode="wb")
+    }
+  }
+}
