@@ -15,7 +15,7 @@ install.packages("foreign")
 
 
 
-#download data from FERC website
+#Set basic function for data
 downloadFERCdata1995 <- function(base.url="http://www.ferc.gov/docs-filing/forms/form-2/data",
                           years=1991:1995,
                           out.dir="./fercForm2Data") {
@@ -71,6 +71,7 @@ downloadFERCdata1995 <- function(base.url="http://www.ferc.gov/docs-filing/forms
 
 #make variable names all lower case
 #Codes remain unchanged
+##confused about this part
 getRows <- function(data, rowNums, rowNames, vars=c("bal_end_yr","additions","retirement"),
                     years=NULL,periods=12) {
   for (i in 1:length(rowNums)) {
@@ -101,3 +102,5 @@ plusNA0 <- function(x,y) {
   return(z)
 }
 
+#Download 1991-1995 data from website
+downloadFERCdata1995()
