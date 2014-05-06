@@ -18,7 +18,7 @@ install.packages("foreign")
 #Set basic function for data
 downloadFERCdata1995 <- function(base.url="http://www.ferc.gov/docs-filing/forms/form-2/data",
                           years=1991:1995,
-                          out.dir="./fercForm2Data") {
+                          out.dir="./fercForm2Data2”) {
    dir.create(out.dir)
    for(y in years) {
      for(letters in c("A-M","N-Z")) {
