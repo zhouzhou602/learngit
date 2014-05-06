@@ -1,0 +1,78 @@
+##Only use library(plyr) shows error in my Mac
+##So I replace it to install.packages and get the released version.
+##In Mac, it may appear”tar: Failed to set default locale”
+##This error can be solved by writing the following in terminal: defaults write org.R-project.R force.LANG en_US.UTF-8
+##And restart R
+
+install.packages("plyr") 
+
+install.packages("gnumeric")
+
+install.packages("gdata")
+
+install.packages("foreign")
+
+##Download data from FERC website
+##Still confused about the method of naming a file
+
+downloadFERCdata1995 <- function(base.url="http://www.ferc.gov/docs-filing/forms/form-2/data",
+                         years=1991:1995,
+                         out.dir="./fercForm2Data") {
+  dir.create(out.dir)
+  for(y in years) {
+    for(letters in c("A-M","N-Z")) {
+      name <- sprintf("F2Y%d%s.zip",y-1900,letters)
+      file.name <- paste(out.dir,name,sep="/")
+      if (file.exists(file.name)) {
+        warning(sprintf("%s already exists, not redownloading\n",file.name))
+        return
+      } else {
+        url <- paste(base.url,y,name,sep="/")
+        download.file(url,file.name,mode="wb")
+      }
+    }
+  }
+}
+
+
+##Load dat files from “base.dir”/F2Y%d%s.zip achieves named “name”
+##and appends them into one long data frame. Returns the data frame.
+##I changed some small parts from your original code, like change the name of the zip ##and change the type of dbf to .dat.
+
+loadYears <- function(name, years=1991:1995, base.dir=.) {
+  require(gnumeric)
+  appendedData <- NULL;
+  tmp.dir <- tempdir()
+  dir.create(tmp.dir)
+  for(year in years) { 
+    zip.name <-
+      paste(base.dir,"/f2Y”,as.character(year),".zip",sep="")
+    zl2 <- unzip(zip.name,list=TRUE)$Name
+    archive.name <- zl2[grepl(name,x=zl2,ignore.case=TRUE)]
+    unzip(zip.name,files=archive.name,exdir=tmp.dir)
+    dat.file <- paste(tmp.dir,archive.name,sep="/")
+    yrData <- read.gnumeric.sheet(dat.file,head=TRUE)
+    if (is.null(appendedData)) {
+      appendedData <- yrData
+    }
+    else {
+      appendedData <- rbind.fill(appendedData,
+                                 yrData)
+    }
+    unlink(dat.file)
+    print(paste("Finished",name,year))
+  }
+
+
+## make variable names all lower case
+##codes remain unchanged
+  names(appendedData) <- tolower(names(appendedData))
+
+  appendedData <- rename(appendedData,
+                         c(respondent="respondent_id",
+                           responden2="respondent_name"))
+
+  return(appendedData)
+}
+
+
