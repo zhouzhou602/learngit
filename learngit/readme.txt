@@ -100,4 +100,4 @@ plusNA0 <- function(x,y) {
   z[is.na(y)] = x[is.na(y)]
   return(z)
 }
-Creating a new branch is quick.
+Creating a new branch is quick & simple.
