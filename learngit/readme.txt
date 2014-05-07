@@ -101,4 +101,3 @@ plusNA0 <- function(x,y) {
   return(z)
 }
 
-Creating a new branch is quick and simple.
